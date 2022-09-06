@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "jsx": "react",
+        "baseUrl": ".",
+        "paths": {
+            "@src/*": ["src/*"],
+            "@www/*": ["src/www/*"]
+        },
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "sourceMap": false,
+        "outDir": "deploy/src",
+        "skipLibCheck": true,
+        "target": "esnext"
+    },
+    "include": ["src", "typing.d.ts"],
+    "exclude": ["deploy", "node_modules"]
+}

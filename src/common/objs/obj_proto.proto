@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+message HelloRequestObject {
+	string name = 1;
+}
+
+message HelloResponseObject {
+	string greet = 1;
+}
+
+message NoneObject {
+}
+
+enum OrderStatus {
+	CLOSED = 0;
+	OPEN = 1;
+	
+}
+
+message Order {
+	string key = 1;
+    optional uint64 timestamp = 2;
+	optional uint64 price = 3;
+	optional  string buyer = 4;
+    optional OrderStatus status = 5;
+}
+
+message ResponseObject {
+	uint32 err = 1;
+	string msg = 2;
+}
+
