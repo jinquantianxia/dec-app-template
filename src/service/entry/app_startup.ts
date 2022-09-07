@@ -1,8 +1,8 @@
 import * as cyfs from 'cyfs-sdk';
 import { DEC_ID, APP_NAME } from '../../common/constant';
-import { postRouterHandleObject } from '../types';
+import { postRouterHandleObject, RouterArray } from '../types';
 import { routers } from '../routers';
-import { checkStack, waitStackOOD, checkSimulator } from '../../common/cyfs_helper/stack_wraper';
+import { checkStack, waitStackOOD } from '../../common/cyfs_helper/stack_wraper';
 
 class PostRouterReqPathRouterHandler implements cyfs.RouterHandlerPostObjectRoutine {
     protected m_routerObj: postRouterHandleObject;
@@ -26,7 +26,7 @@ class PostRouterReqPathRouterHandler implements cyfs.RouterHandlerPostObjectRout
     }
 }
 
-async function addRouters(stack: cyfs.SharedCyfsStack): Promise<void> {
+async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Promise<void> {
     for (const routerObj of routers) {
         const handleId = `post-${routerObj.reqPath}`;
         const r = await stack.router_handlers().add_post_object_handler(
@@ -59,9 +59,9 @@ async function main() {
         console.error(`service start failed when wait stack online, err: ${waitR}.`);
         return;
     }
-    // 上线后取得stack
+    // 注册路由
     const stack = checkStack().check();
-    addRouters(stack);
+    addRouters(stack, routers);
     console.log('service is ready.');
 }
 
