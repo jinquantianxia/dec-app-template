@@ -33,7 +33,7 @@ async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Pr
             cyfs.RouterHandlerChain.Handler,
             handleId,
             1,
-            `dec_id==${stack.dec_id!}`, // filter config
+            `dec_id==${stack.dec_id!}`, // filter config,只允许当前App的请求通过
             cyfs.RouterHandlerAction.Pass,
             cyfs.Some(new PostRouterReqPathRouterHandler(routerObj))
         );

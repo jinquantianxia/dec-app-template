@@ -15,7 +15,6 @@ export async function createOrderReqRouter(
 ): Promise<cyfs.BuckyResult<cyfs.RouterHandlerPostObjectResult>> {
     const stack = checkStack().check();
     const owner = stack.local_device().desc().owner()!.unwrap();
-
     console.log(`current target -----> ${req.request.common.target?.to_base_58()}`);
     if (!owner.equals(req.request.common.target!)) {
         console.log(`should transfer to -> ${req.request.common.target}`);
@@ -25,8 +24,9 @@ export async function createOrderReqRouter(
             })
         );
     }
+
+    // 解析出请求对象，判断请求对象是否是 Order 对象
     const { object, object_raw } = req.request.object;
-    // 接收Order对象
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = 'obj_type err.';
         console.error(msg);
@@ -34,7 +34,7 @@ export async function createOrderReqRouter(
             cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.InvalidParam, msg))
         );
     }
-    // 解码
+    // 使用 OrderDecoder 解码出 Order 对象
     const decoder = new OrderDecoder();
     const dr = decoder.from_raw(object_raw);
     if (dr.err) {
@@ -44,10 +44,9 @@ export async function createOrderReqRouter(
     }
     const OrderObject = dr.unwrap();
 
-    const path = `/orders/${OrderObject.key}`;
     console.log(`will create order, ${OrderObject.key}`);
 
-    // 创建pathOpEnv
+    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
     let pathOpEnv: cyfs.PathOpEnvStub;
     const r = await stack.root_state_stub().create_path_op_env();
     if (r.err) {
@@ -57,7 +56,8 @@ export async function createOrderReqRouter(
     }
     pathOpEnv = r.unwrap();
 
-    // 路径上锁
+    // 确定新 Order 对象将要存储的路径并对该路径上锁
+    const path = `/orders/${OrderObject.key}`;
     const paths = [path];
     console.log(`will lock paths ${JSON.stringify(paths)}`);
     const lockR = await pathOpEnv.lock(paths, cyfs.JSBI.BigInt(30000));
@@ -71,19 +71,16 @@ export async function createOrderReqRouter(
     // 上锁成功
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
+    // 利用 Order 对象信息创建对应的 NONObjectInfo 对象，通过put_object操作，把 NONObjectInfo 对象新增到 RootState 上
     const decId = stack.dec_id!;
     const nonObj = new cyfs.NONObjectInfo(
         OrderObject.desc().object_id(),
         OrderObject.encode_to_buf().unwrap()
     );
-    // 更新对象
     const putR = await stack.non_service().put_object({
         common: {
             dec_id: decId,
             level: cyfs.NONAPILevel.NOC,
-            // NDC 对应non的noc level，仅限本地操作，不会发起网络操作
-            // NDN 对应non的non level，仅限同zone操作，可以指定一个zone内的target，不指定则代表本地协议栈
-            // Router 对应non的router操作，有一系列的内部默认操作，target可以指定people等有权对象，这个受acl配置控制
             flags: 0
         },
         object: nonObj
@@ -94,9 +91,9 @@ export async function createOrderReqRouter(
         console.error(errMsg);
         return Promise.resolve(cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.Failed, errMsg)));
     }
-    const objectId = nonObj.object_id;
 
-    // 插入新对象
+    // 使用 NONObjectInfo 的 object_id 进行创建新 Order 对象的事务操作
+    const objectId = nonObj.object_id;
     const rp = await pathOpEnv.insert_with_path(path, objectId);
     if (rp.err) {
         pathOpEnv.abort();
@@ -115,6 +112,8 @@ export async function createOrderReqRouter(
 
     // 事务操作成功
     console.log('create new order success.');
+
+    // 创建 ResponseObject 对象作为响应参数并将结果响应回去
     const respObj: CreateOrderReqResponseParam = ResponseObject.create({
         err: 0,
         msg: 'ok',
