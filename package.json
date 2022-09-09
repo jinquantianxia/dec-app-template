@@ -6,10 +6,10 @@
     "scripts": {
         "dev": "npm run proto & cd src/www && npx webpack serve --hot  --mode development --env development",
         "build": "rimraf dist & npm run proto & npx tsc  & cd src/www & npx webpack --env production",
-        "proto": "cd tool & protoc.exe --proto_path=../src/common/objs --js_out=import_style=commonjs,binary:../src/common/objs --ts_out=../src/common/objs/ ../src/common/objs/obj_proto.proto",
         "deploy": "rimraf deploy & npm run proto & npx tsc & node move_deploy.js & cd deploy & cyfs deploy",
         "sim1": "npm run proto & npx tsc & node deploy/src/service/entry/app_startup.js --start --simulator 1",
         "sim2": "npm run proto & npx tsc & node deploy/src/service/entry/app_startup.js --start --simulator 2",
+        "proto": "cd tool & protoc.exe --proto_path=../src/common/objs --js_out=import_style=commonjs,binary:../src/common/objs --ts_out=../src/common/objs/ ../src/common/objs/obj_proto.proto",
         "lint": "eslint \"**/*.{ts,tsx}\"",
         "lint-fix": "eslint \"**/*.{ts,tsx}\" --fix"
     },
