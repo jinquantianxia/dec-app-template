@@ -24,3 +24,17 @@
 -   dist 目录是 Dec App 项目前端打包文件存放目录
 -   doc 目录存放文档
 -   src 存放代码目录
+
+## mac 环境下编译 proto 文件为 Typescript
+
+在项目根目录下，执行指令如下：
+
+```shell
+npm i -g ts-protoc-gen --force
+cd tool
+./protoc --proto_path=../src/common/objs --js_out=import_style=commonjs,binary:../src/common/objs --ts_out=../src/common/objs/ ../src/common/objs/obj_proto.proto
+```
+
+在执行最后一行命令时，由于是直接执行的 protoc 执行程序，可能会弹窗提示 _无法打开“protoc”，因为无法验证开发者_，需要开发者按照一下路径去设置：_系统偏好设置_ -> _安全性与隐私_ -> _允许从以下位置下载的 App_ -> 选择 _App Store 和认可的开发者_ -> 点击 _仍然允许_
+按照这个路径设置好，重新执行最后一行指令即可。
+运行完毕，在 src/common/objs 文件夹下，生成了 obj_proto_pb.d.ts 和 obj_proto_pb.js 这两个文件。在 obj_proto_pb.d.ts 声明文件中，我们看到了 Order 对象的类型定义。

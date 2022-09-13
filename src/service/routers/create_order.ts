@@ -107,7 +107,10 @@ export async function createOrderRouter(
 
     // 跨zone通知，通知指定的用户OOD
     // const stackWraper = checkStack();
-    // const peopleId = '5r4MYfFVtnu7yAP5XSZGg8JsqZuzyqozH6oXCLMPb8h8'; // If here is the windows simulator environment, C:\cyfs\etc\zone-simulator\desc_list -> zone2 -> people, otherwise, you should use real poepleId.
+    // // If here is the windows simulator environment, C:\cyfs\etc\zone-simulator\desc_list -> zone2 -> people,
+    // // If here is the mac simulator environment, /Users/<username>/Library/Application Support/cyfs/etc/zone-simulator/desc_list -> zone2 -> people,
+    // // otherwise, you should use real poepleId.
+    // const peopleId = '5r4MYfFVtnu7yAP5XSZGg8JsqZuzyqozH6oXCLMPb8h8';
     // await stackWraper.postObject(orderObject, ResponseObjectDecoder, {
     //     reqPath: ROUTER_PATHS.CREATE_ORDER_REQ,
     //     decId: stack.dec_id!,
