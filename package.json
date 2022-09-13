@@ -60,7 +60,7 @@
     },
     "dependencies": {
         "antd": "^4.18.3",
-        "cyfs-sdk": "npm:cyfs-sdk-nightly@^0.5.1",
+        "cyfs-sdk": "npm:cyfs-sdk-nightly@^0.5.9",
         "path": "^0.12.7",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",

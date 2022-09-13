@@ -30,7 +30,11 @@
         // http://eslint.cn/docs/rules/
         "no-void": ["off", { "allowAsStatement": false }],
         "no-empty-pattern": "off",
-        "@typescript-eslint/no-empty-interface": "off"
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-duplicate-enum-values": "off",
+        "no-constant-binary-expression": "off",
+        "no-unused-private-class-members": "off",
+        "prefer-object-has-own": "off"
     },
     "parserOptions": {
         "ecmaFeatures": {
