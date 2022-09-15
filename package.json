@@ -1,7 +1,7 @@
 {
     "name": "dec-app-demo",
     "version": "1.0.0",
-    "description": "",
+    "description": "This is a demo application",
     "main": "index.js",
     "scripts": {
         "dev": "cd src/www && npx webpack serve --hot  --mode development --env development",

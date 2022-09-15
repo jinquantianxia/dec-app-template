@@ -1,7 +1,7 @@
 {
     "app_name": "demo",
-    "version": "1.0.2",
-    "description": "",
+    "version": "1.0.0",
+    "description": "This is a demo application",
     "icon": "",
     "service": {
         "pack": ["src/service", "src/common"],
