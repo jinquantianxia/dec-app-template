@@ -1,10 +1,10 @@
 {
     "app_name": "demo",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "",
     "icon": "",
     "service": {
-        "pack": ["src\\service", "src\\common"],
+        "pack": ["src/service", "src/common"],
         "type": "node",
         "dist_targets": ["x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu"],
         "app_config": {
@@ -22,7 +22,7 @@
         "entry": "index.html"
     },
     "dist": "dist",
-    "owner_config": ".cyfs\\owner.json",
+    "owner_config": ".cyfs/owner.json",
     "ext_info": {
         "medias": []
     },

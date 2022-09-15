@@ -1,7 +1,7 @@
 import * as cyfs from 'cyfs-sdk';
 import { checkStack } from '../../common/cyfs_helper/stack_wraper';
 import { AppObjectType } from '../../common/types';
-import { DeleteOrderRequestParam, DeleteOrderResponseParam } from '../../common/routers';
+import { DeleteOrderResponseParam } from '../../common/routers';
 import { ResponseObject } from '../../common/objs/response_object';
 import { toNONObjectInfo, makeBuckyErr } from '../../common/cyfs_helper/kits';
 import { OrderDecoder } from '../../common/objs/order';

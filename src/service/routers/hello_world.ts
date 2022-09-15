@@ -1,5 +1,5 @@
 import * as cyfs from 'cyfs-sdk';
-import { TestHelloRequestParam, TestHelloResponseParam } from '../../common/routers';
+import { TestHelloResponseParam } from '../../common/routers';
 import { AppObjectType } from '../../common/types';
 import { HelloResponseObject } from '../../common/objs/hello_response_object';
 import { HelloRequestObjectDecoder } from '../../common/objs/hello_request_object';

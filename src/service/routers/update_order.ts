@@ -2,7 +2,7 @@ import * as cyfs from 'cyfs-sdk';
 import { OrderDecoder } from '../../common/objs/order';
 import { checkStack } from '../../common/cyfs_helper/stack_wraper';
 import { AppObjectType } from '../../common/types';
-import { UpdateOrderRequestParam, UpdateOrderResponseParam } from '../../common/routers';
+import { UpdateOrderResponseParam } from '../../common/routers';
 import { ResponseObject } from '../../common/objs/response_object';
 import { toNONObjectInfo, makeBuckyErr } from '../../common/cyfs_helper/kits';
 
