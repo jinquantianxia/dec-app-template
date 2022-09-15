@@ -33,6 +33,7 @@ function main() {
     copyFileWithLog('service_package.cfg', 'deploy/service_package.cfg');
     copyFileWithLog('package.json', 'deploy/package.json');
     copyDirectory('.cyfs', 'deploy/.cyfs');
+    copyFileWithLog('src/common/objs/obj_proto_pb.js', 'deploy/src/common/objs/obj_proto_pb.js');
     fsExtra.removeSync('deploy/src/www');
     copyDirectory('dist', 'deploy/src/www/dist');
 }
