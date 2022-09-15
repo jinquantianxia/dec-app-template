@@ -5,13 +5,14 @@
 ## CYFS 项目基本编译命令
 
 -   执行 yarn 安装依赖
--   执行 proto-windows 编译 proto 文件为 js 文件(mac 见下文)
+-   执行 yarn proto-mac 编译 proto 文件为 js 文件，需要先执行 yarn proto-mac-pre (mac)
+-   执行 yarn proto-windows 编译 proto 文件为 js 文件(windows)
 -   执行 yarn dev 启动本地前端服务，从`cyfs 浏览器`可以实时查看修改效果
--   运行 tool/zone-simulator.exe，打开模拟器环境。注意：如果只是同 Zone 接口测试，使用 sim1 即可，如果需要测试跨 Zone 接口，需再打开 sim2
+-   运行 tools/zone-simulator.exe，打开模拟器。注意：如果只是同 Zone 接口测试，使用 sim1 即可，如果需要测试跨 Zone 接口，需再打开 sim2
 -   执行 yarn sim1 启动运行于本地模拟器上的`sim1`,
 -   执行 yarn sim2 启动运行于本地模拟器上的`sim2`
 -   执行 yarn build 执行构建任务
--   执行 yarn deploy 部署`DEC App`到`OOD`，用户可安装
+-   执行 yarn deploy 部署`DEC App`到`OOD`，用户可安装，mac 系统需要先执行 yarn mac-deploy-pre
 -   执行 yarn lint 执行 eslint 检查
 -   执行 yarn lint_fix 执行 eslint 自动修复
 
