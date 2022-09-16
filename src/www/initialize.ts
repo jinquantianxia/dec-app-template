@@ -1,4 +1,4 @@
-// 启动初始化入口
+// Start the initialization entry
 import * as cyfs from 'cyfs-sdk';
 import { DEC_ID, APP_NAME } from '../common/constant';
 import {
