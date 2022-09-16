@@ -13,7 +13,7 @@ import {
 export async function createOrderRouter(
     req: cyfs.RouterHandlerPostObjectRequest
 ): Promise<cyfs.BuckyResult<cyfs.RouterHandlerPostObjectResult>> {
-    // 解析出请求对象，判断请求对象是否是 Order 对象
+    // Parse out the request object and determine whether the request object is an Order object
     const { object, object_raw } = req.request.object;
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = 'obj_type err.';
@@ -21,7 +21,7 @@ export async function createOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
 
-    // 使用 OrderDecoder 解码出 Order 对象
+    // Use OrderDecoder to decode the Order object
     const decoder = new OrderDecoder();
     const dr = decoder.from_raw(object_raw);
     if (dr.err) {
@@ -31,7 +31,7 @@ export async function createOrderRouter(
     }
     const orderObject = dr.unwrap();
 
-    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
+    // Create pathOpEnv to perform transaction operations on objects on RootState
     let pathOpEnv: cyfs.PathOpEnvStub;
     const stack = checkStack().check();
     const r = await stack.root_state_stub().create_path_op_env();
@@ -42,7 +42,7 @@ export async function createOrderRouter(
     }
     pathOpEnv = r.unwrap();
 
-    // 确定新 Order 对象将要存储的路径并对该路径上锁
+    // Determine the path where the new Order object will be stored and lock the path
     const path = `/orders/${orderObject.key}`;
     console.log(`will create order, ${orderObject.key}`);
     const paths = [path];
