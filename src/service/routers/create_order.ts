@@ -56,7 +56,7 @@ export async function createOrderRouter(
     }
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
-    // 利用 Order 对象信息创建对应的 NONObjectInfo 对象，通过put_object操作，把 NONObjectInfo 对象新增到 RootState 上
+    // Use the Order object information to create the corresponding NONObjectInfo object, and add the NONObjectInfo object to the RootState through the put_object operation
     const decId = stack.dec_id!;
     const nonObj = new cyfs.NONObjectInfo(
         orderObject.desc().object_id(),
@@ -65,7 +65,7 @@ export async function createOrderRouter(
     const putR = await stack.non_service().put_object({
         common: {
             dec_id: decId,
-            level: cyfs.NONAPILevel.NOC, // 仅限本地操作，不会发起网络操作
+            level: cyfs.NONAPILevel.NOC, // Local operation only, no network operation will be initiated
             flags: 0
         },
         object: nonObj
@@ -77,7 +77,7 @@ export async function createOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 使用 NONObjectInfo 的 object_id 进行创建新 Order 对象的事务操作
+    // Use the object_id of NONObjectInfo for the transaction operation of creating a new Order object
     const objectId = nonObj.object_id;
     const rp = await pathOpEnv.insert_with_path(path, objectId);
     if (rp.err) {
@@ -87,17 +87,17 @@ export async function createOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 事务提交
+    // transaction commit
     const ret = await pathOpEnv.commit();
     if (ret.err) {
         const errMsg = `commit failed, ${ret}.`;
         console.error(errMsg);
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
-    // 事务操作成功
+    // Transaction operation succeeded
     console.log('create new order success.');
 
-    // 创建 ResponseObject 对象作为响应参数并将结果发给前端
+    // Create a ResponseObject object as a response parameter and send the result to the front end
     const respObj: CreateOrderResponseParam = ResponseObject.create({
         err: 0,
         msg: 'ok',
@@ -105,7 +105,7 @@ export async function createOrderRouter(
         owner: checkStack().checkOwner()
     });
 
-    // 跨zone通知，通知指定的用户OOD
+    // Cross-zone notification, notify the specified user OOD
     // const stackWraper = checkStack();
     // // If here is the windows simulator environment, C:\cyfs\etc\zone-simulator\desc_list -> zone2 -> people,
     // // If here is the mac simulator environment, /Users/<username>/Library/Application Support/cyfs/etc/zone-simulator/desc_list -> zone2 -> people,

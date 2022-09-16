@@ -1,4 +1,4 @@
-// cyfs零散的工具类函数
+// cyfs scattered utility functions
 
 import * as cyfs from 'cyfs-sdk';
 
@@ -179,7 +179,7 @@ export function checkObjectIdArray(ids: Array<Uint8Array>): {
 }
 
 /**
- * 校验peopleId数组
+ * Check the peopleId array
  * @param ids
  * @returns
  */

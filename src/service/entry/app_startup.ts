@@ -33,7 +33,7 @@ async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Pr
             cyfs.RouterHandlerChain.Handler,
             handleId,
             1,
-            `dec_id==${stack.dec_id!}`, // filter config,只允许当前App的请求通过
+            `dec_id==${stack.dec_id!}`, // filter config,Only allow requests from the current App to pass through
             cyfs.RouterHandlerAction.Pass,
             cyfs.Some(new PostRouterReqPathRouterHandler(routerObj))
         );
@@ -48,18 +48,18 @@ async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Pr
 }
 
 async function main() {
-    // 日志记录
+    // logging
     cyfs.clog.enable_file_log({
         name: APP_NAME,
         dir: cyfs.get_app_log_dir(APP_NAME)
     });
-    // 等待上线
+    // waiting to go online
     const waitR = await waitStackOOD(DEC_ID);
     if (waitR.err) {
         console.error(`service start failed when wait stack online, err: ${waitR}.`);
         return;
     }
-    // 注册路由
+    // register route
     const stack = checkStack().check();
     addRouters(stack, routers);
     console.log('service is ready.');

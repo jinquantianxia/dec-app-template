@@ -18,11 +18,11 @@ enum OrderStatus {
 }
 
 message Order {
-	string key = 1; // 订单标识
-    optional uint64 timestamp = 2; // 创建订单的时间戳
-	optional uint64 price = 3; // 订单金额
-	optional  string buyer = 4; // 订单的购买者
-    optional OrderStatus status = 5; // 订单状态，打开或者关闭
+	string key = 1; // Order ID
+    optional uint64 timestamp = 2; // Timestamp of order creation
+	optional uint64 price = 3; // order amount
+	optional  string buyer = 4; // purchaser of the order
+    optional OrderStatus status = 5; // Order status, open or closed
 }
 
 message ResponseObject {

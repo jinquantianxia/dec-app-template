@@ -2,7 +2,7 @@
 import * as cyfs from 'cyfs-sdk';
 import { AppObjectType } from '../types';
 import * as protos from './obj_proto_pb';
-// type的前16位是系统保留类型，应用的对象type应该大于32767
+// The first 16 bits of type are reserved by the system, and the type of the applied object should be greater than 32767
 export const ORDER_OBJECT_TYPE = AppObjectType.ORDER;
 
 export class UserDescTypeInfo extends cyfs.DescTypeInfo {
@@ -58,27 +58,22 @@ export class OrderDescContent extends cyfs.ProtobufDescContent {
         return cyfs.Ok(target);
     }
 
-    // 获取唯一标识
     public get key(): string {
         return this.m_key;
     }
 
-    // 获取时间戳
     public get timestamp(): number | undefined {
         return this.m_timestamp;
     }
 
-    // 获取价格
     public get price(): number | undefined {
         return this.m_price;
     }
 
-    // 获取buyer
     public get buyer(): string | undefined {
         return this.m_buyer;
     }
 
-    // 获取订单状态
     public get status(): protos.OrderStatusMap[keyof protos.OrderStatusMap] | undefined {
         return this.m_status;
     }

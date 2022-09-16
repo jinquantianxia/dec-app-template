@@ -9,7 +9,7 @@ import { toNONObjectInfo, makeBuckyErr } from '../../common/cyfs_helper/kits';
 export async function updateOrderRouter(
     req: cyfs.RouterHandlerPostObjectRequest
 ): Promise<cyfs.BuckyResult<cyfs.RouterHandlerPostObjectResult>> {
-    // 解析出请求对象，判断请求对象是否是 Order 对象
+    // Parse out the request object and determine whether the request object is an Order object
     const { object, object_raw } = req.request.object;
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = 'obj_type err.';
@@ -17,7 +17,7 @@ export async function updateOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
 
-    // 使用 OrderDecoder 解码出 Order 对象
+    // Use OrderDecoder to decode the Order object
     const decoder = new OrderDecoder();
     const r = decoder.from_raw(object_raw);
     if (r.err) {
@@ -27,7 +27,7 @@ export async function updateOrderRouter(
     }
     const orderObject = r.unwrap();
 
-    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
+    // Create pathOpEnv to perform transaction operations on objects on RootState
     let pathOpEnv: cyfs.PathOpEnvStub;
     const stack = checkStack().check();
     let createRet = await stack.root_state_stub().create_path_op_env();
@@ -38,7 +38,7 @@ export async function updateOrderRouter(
     }
     pathOpEnv = createRet.unwrap();
 
-    // 确定要更新的 Order 对象的存储路径并对该路径上锁
+    // Determine the storage path of the Order object to be updated and lock the path
     const queryOrderPath = `/orders/${orderObject.key}`;
     const paths = [queryOrderPath];
     console.log(`will lock paths ${JSON.stringify(paths)}`);
@@ -50,10 +50,10 @@ export async function updateOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 上锁成功
+    // Locked successfully
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
-    // 使用 pathOpEnv 的 get_by_path 方法从旧的 Order 对象的存储路径中获取旧的 Order 对象的 object_id
+    // Use the get_by_path method of pathOpEnv to get the object_id of the old Order object from the storage path of the old Order object
     const idR = await pathOpEnv.get_by_path(queryOrderPath);
     if (idR.err) {
         const errMsg = `get_by_path (${queryOrderPath}) failed, ${idR}`;
@@ -67,7 +67,7 @@ export async function updateOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 利用新的 Order 对象信息创建对应的 NONObjectInfo 对象，通过put_object操作，把 NONObjectInfo 对象更新到 RootState 上
+    // Use the new Order object information to create the corresponding NONObjectInfo object, and update the NONObjectInfo object to RootState through the put_object operation
     const nonObj = new cyfs.NONObjectInfo(
         orderObject.desc().object_id(),
         orderObject.encode_to_buf().unwrap()
@@ -87,7 +87,7 @@ export async function updateOrderRouter(
         return putR;
     }
 
-    // 利用pathOpEnv，用新的 Order 对象的 NONObjectInfo 对象的 object_id 进行替换旧的 Order 对象的事务操作
+    // Using pathOpEnv, the transaction operation of replacing the old Order object with the object_id of the NONObjectInfo object of the new Order object
     const objectId = nonObj.object_id;
     const rs = await pathOpEnv.set_with_path(queryOrderPath, objectId!, id, true);
     console.log(
@@ -98,14 +98,14 @@ export async function updateOrderRouter(
         pathOpEnv.abort();
         return rs;
     }
-    // 事务提交
+    // transaction commit
     const ret = await pathOpEnv.commit();
     if (ret.err) {
         const errMsg = `commit failed, ${ret}`;
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 创建 ResponseObject 对象作为响应参数并将结果发给前端
+    // Create a ResponseObject object as a response parameter and send the result to the front end
     const respObj: UpdateOrderResponseParam = ResponseObject.create({
         err: 0,
         msg: 'ok',

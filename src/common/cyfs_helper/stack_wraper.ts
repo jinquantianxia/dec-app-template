@@ -10,7 +10,7 @@ import {
     toNONObjectInfo
 } from './kits';
 
-// 模拟器启动，带参数`--simulator ZoneNo DeviceNo`
+// Simulator starts with parameter `--simulator ZoneNo DeviceNo`
 
 export enum SimulatorZoneNo {
     REAL = 0,

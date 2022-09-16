@@ -10,9 +10,9 @@ import { OrderObject } from '@www/types/order';
 // create order
 export async function createOrder(order: OrderObject) {
     const stackWraper = checkStack();
-    // 创建Order对象
+    // Create an Order object
     const orderObj = Order.create(order);
-    // 发起请求
+    // make a request
     const ret = await stackWraper.postObject(orderObj, ResponseObjectDecoder, {
         reqPath: ROUTER_PATHS.CREATE_ORDER,
         decId: stackWraper.decId
@@ -21,7 +21,7 @@ export async function createOrder(order: OrderObject) {
         console.error(`reponse err, ${ret}`);
         return null;
     }
-    // 解析出 ResponseObjec 对象
+    // Parse out the ResponseObject object
     const r = ret.unwrap();
     if (r) {
         const retObj = {
@@ -37,9 +37,9 @@ export async function createOrder(order: OrderObject) {
 // retrieve order
 export async function retrieveOrder(key: string) {
     const stackWraper = checkStack();
-    // 创建Order对象，只包含 key 值
+    // Create an Order object, containing only the key value
     const obj = Order.create({ key, decId: stackWraper.decId!, owner: stackWraper.checkOwner() });
-    // 发起请求
+    // make a request
     const ret = await stackWraper.postObject(obj, OrderDecoder, {
         reqPath: ROUTER_PATHS.RETRIEVE_ORDER,
         decId: stackWraper.decId
@@ -48,7 +48,7 @@ export async function retrieveOrder(key: string) {
         console.error(`reponse error, ${ret}`);
         return null;
     }
-    // 解析 Order 对象
+    // Parse the Order object
     const r = ret.unwrap();
     if (r) {
         const orderObj = {
@@ -67,9 +67,9 @@ export async function retrieveOrder(key: string) {
 // update order
 export async function updateOrder(order: OrderObject) {
     const stack = checkStack();
-    // 创建 Order 对象
+    // Create an Order object
     const orderObj = Order.create(order);
-    // 发起请求
+    // make a request
     const ret = await stack.postObject(orderObj, ResponseObjectDecoder, {
         reqPath: ROUTER_PATHS.UPDATE_ORDER,
         decId: stack.decId
@@ -78,7 +78,7 @@ export async function updateOrder(order: OrderObject) {
         console.error(`reponse err, ${ret}`);
         return null;
     }
-    // 解析出 ResponseObject 对象
+    // Parse out the ResponseObject object
     const r = ret.unwrap();
     if (r) {
         const retObj = {
@@ -95,9 +95,9 @@ export async function updateOrder(order: OrderObject) {
 // delete order
 export async function deleteOrder(key: string) {
     const stackWraper = checkStack();
-    // 创建Order对象，只包含 key 值
+    // Create an Order object, containing only the key value
     const obj = Order.create({ key, decId: stackWraper.decId!, owner: stackWraper.checkOwner() });
-    // 发起请求
+    // make a request
     const ret = await stackWraper.postObject(obj, ResponseObjectDecoder, {
         reqPath: ROUTER_PATHS.DELETE_ORDER,
         decId: stackWraper.decId
@@ -106,7 +106,7 @@ export async function deleteOrder(key: string) {
         console.error(`reponse err, ${ret}`);
         return null;
     }
-    // 解析出 ResponseObject 对象
+    // Parse out the ResponseObject object
     const r = ret.unwrap();
     if (r) {
         const retObj = {
@@ -122,11 +122,11 @@ export async function deleteOrder(key: string) {
 // paging list orders under path /orders
 export async function listOrdersByPage(pageIndex: number) {
     const stack = checkStack();
-    // 获取自己的OwnerId
+    // Get your own OwnerId
     const selfObjectId = stack.checkOwner();
-    // 获取到 cyfs.GlobalStateAccessStub 实例
+    // Get an instance of cyfs.GlobalStateAccessStub
     const access = stack.check().root_state_access_stub(selfObjectId);
-    // 使用list方法，列出 /orders 下的全部对象
+    // Use the list method to list all objects under /orders
     const lr = await access.list('/orders', pageIndex, 10);
 
     if (lr.err) {

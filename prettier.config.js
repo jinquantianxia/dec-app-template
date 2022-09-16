@@ -1,38 +1,38 @@
 // prettier.config.js or .prettierrc.js
 module.exports = {
-    // 一行最多 100 字符
+    // Up to 100 characters per line
     printWidth: 100,
-    // 使用 4 个空格缩进
+    // indent with 4 spaces
     tabWidth: 4,
-    // 不使用缩进符，而使用空格
+    // don't use indents, use spaces
     useTabs: false,
-    // 行尾需要有分号
+    // semicolon required at end of line
     semi: true,
-    // 使用单引号
+    // use single quotes
     singleQuote: true,
-    // 对象的 key 仅在必要时用引号
+    // object keys are quoted only if necessary
     quoteProps: 'as-needed',
-    // jsx 不使用单引号，而使用双引号
+    // jsx does not use single quotes, but double quotes
     jsxSingleQuote: false,
-    // 末尾不需要逗号
+    // no comma required at the end
     trailingComma: 'none',
-    // 大括号内的首尾需要空格
+    // Spaces are required at the beginning and end of the braces
     bracketSpacing: true,
-    // jsx 标签的反尖括号需要换行
+    // The back angle brackets of jsx tags need to wrap
     jsxBracketSameLine: false,
-    // 箭头函数，只有一个参数的时候，也需要括号
+    // Arrow functions, when there is only one parameter, also need parentheses
     arrowParens: 'always',
-    // 每个文件格式化的范围是文件的全部内容
+    // The formatted range for each file is the entire contents of the file
     rangeStart: 0,
     rangeEnd: Infinity,
-    // 不需要写文件开头的 @prettier
+    // No need to write @prettier at the beginning of the file
     requirePragma: false,
-    // 不需要自动在文件开头插入 @prettier
+    // no need to automatically insert @prettier at the beginning of the file
     insertPragma: false,
-    // 使用默认的折行标准
+    // use default wrapping standard
     proseWrap: 'preserve',
-    // 根据显示样式决定 html 要不要折行
+    // Decide whether html should wrap or not according to the display style
     htmlWhitespaceSensitivity: 'css',
-    // 换行符使用 lf
+    // newlines use lf
     endOfLine: 'lf'
 };

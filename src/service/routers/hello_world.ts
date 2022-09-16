@@ -16,7 +16,7 @@ export async function helloWorld(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
 
-    // 解析HelloRequestObject
+    // Parse HelloRequestObject
     const decoder = new HelloRequestObjectDecoder();
     const r = decoder.from_raw(object_raw);
     if (r.err) {
@@ -24,10 +24,10 @@ export async function helloWorld(
         console.error(msg);
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
-    // 取出字符串
+    // take out the string
     const name = r.unwrap().name;
 
-    // 组装新字符串响应
+    // Assemble new string response
     const greet = `Hello ${name}, welcome to CYFS World!`;
     const stackWraper = checkStack();
     const helloResponseObj: TestHelloResponseParam = HelloResponseObject.create({

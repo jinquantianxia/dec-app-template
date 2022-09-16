@@ -7,7 +7,7 @@ import { toNONObjectInfo, makeBuckyErr } from '../../common/cyfs_helper/kits';
 export async function retrieveOrderRouter(
     req: cyfs.RouterHandlerPostObjectRequest
 ): Promise<cyfs.BuckyResult<cyfs.RouterHandlerPostObjectResult>> {
-    // 解析出请求对象，判断请求对象是否是 Order 对象
+    // Parse out the request object and determine whether the request object is an Order object
     const { object, object_raw } = req.request.object;
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = `obj_type err.`;
@@ -15,7 +15,7 @@ export async function retrieveOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
 
-    // 使用 OrderDecoder 解码出 Order 对象
+    // Use OrderDecoder to decode the Order object
     const orderDecoder = new OrderDecoder();
     const dr = orderDecoder.from_raw(object_raw);
     if (dr.err) {
@@ -25,7 +25,7 @@ export async function retrieveOrderRouter(
     }
     const orderObject = dr.unwrap();
 
-    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
+    // Create pathOpEnv to perform transaction operations on objects on RootState
     let pathOpEnv: cyfs.PathOpEnvStub;
     const stack = checkStack().check();
     const createRet = await stack.root_state_stub().create_path_op_env();
@@ -36,7 +36,7 @@ export async function retrieveOrderRouter(
     }
     pathOpEnv = createRet.unwrap();
 
-    // 确定要查询的 Order 对象的存储路径并对该路径上锁
+    // Determine the storage path of the Order object to be queried and lock the path
     const queryOrderPath = `/orders/${orderObject.key}`;
     const paths = [queryOrderPath];
     console.log(`will lock paths ${JSON.stringify(paths)}`);
@@ -48,10 +48,10 @@ export async function retrieveOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 上锁成功
+    // Locked successfully
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
-    // 使用 pathOpEnv 的 get_by_path 方法从 Order 对象的存储路径中获取 Order 对象的 object_id
+    // Use the get_by_path method of pathOpEnv to get the object_id of the Order object from the storage path of the Order object
     const idR = await pathOpEnv.get_by_path(queryOrderPath);
     if (idR.err) {
         const errMsg = `get_by_path (${queryOrderPath}) failed, ${idR}`;
@@ -65,7 +65,7 @@ export async function retrieveOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 使用 get_object 方法，以 Order 对象的 object_id 为参数从 RootState 上获取到 Order 对象对应的 cyfs.NONGetObjectOutputResponse 对象
+    // Use the get_object method to obtain the cyfs.NONGetObjectOutputResponse object corresponding to the Order object from RootState with the object_id of the Order object as a parameter
     const gr = await stack.non_service().get_object({
         common: { level: cyfs.NONAPILevel.NOC, flags: 0 },
         object_id: id
@@ -76,7 +76,7 @@ export async function retrieveOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 释放锁后，对 Uint8Array 格式的 Order 对象进行解码，得到最终的 Order对象
+    // After releasing the lock, decode the Order object in Uint8Array format to get the final Order object
     pathOpEnv.abort();
     const orderResult = gr.unwrap().object.object_raw;
     const decoder = new OrderDecoder();
@@ -89,7 +89,7 @@ export async function retrieveOrderRouter(
         );
     }
     const orderObj = r.unwrap();
-    // 将解码后得到的 Order 对象返回给前端
+    // Return the decoded Order object to the front end
     return Promise.resolve(
         cyfs.Ok({
             action: cyfs.RouterHandlerAction.Response,

@@ -21,7 +21,7 @@ export async function createOrderReqRouter(
         );
     }
 
-    // 解析出请求对象，判断请求对象是否是 Order 对象
+    // Parse out the request object and determine whether the request object is an Order object
     const { object, object_raw } = req.request.object;
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = 'obj_type err.';
@@ -30,7 +30,7 @@ export async function createOrderReqRouter(
             cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.InvalidParam, msg))
         );
     }
-    // 使用 OrderDecoder 解码出 Order 对象
+    // Use OrderDecoder to decode the Order object
     const decoder = new OrderDecoder();
     const dr = decoder.from_raw(object_raw);
     if (dr.err) {
@@ -42,7 +42,7 @@ export async function createOrderReqRouter(
 
     console.log(`will create order, ${OrderObject.key}`);
 
-    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
+    // Create pathOpEnv to perform transaction operations on objects on RootState
     let pathOpEnv: cyfs.PathOpEnvStub;
     const r = await stack.root_state_stub().create_path_op_env();
     if (r.err) {
@@ -52,7 +52,7 @@ export async function createOrderReqRouter(
     }
     pathOpEnv = r.unwrap();
 
-    // 确定新 Order 对象将要存储的路径并对该路径上锁
+    // Determine the path where the new Order object will be stored and lock the path
     const path = `/orders/${OrderObject.key}`;
     const paths = [path];
     console.log(`will lock paths ${JSON.stringify(paths)}`);
@@ -64,10 +64,10 @@ export async function createOrderReqRouter(
         return Promise.resolve(cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.Failed, errMsg)));
     }
 
-    // 上锁成功
+    // Locked successfully
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
-    // 利用 Order 对象信息创建对应的 NONObjectInfo 对象，通过put_object操作，把 NONObjectInfo 对象新增到 RootState 上
+    // Use the Order object information to create the corresponding NONObjectInfo object, and add the NONObjectInfo object to the RootState through the put_object operation
     const decId = stack.dec_id!;
     const nonObj = new cyfs.NONObjectInfo(
         OrderObject.desc().object_id(),
@@ -88,7 +88,7 @@ export async function createOrderReqRouter(
         return Promise.resolve(cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.Failed, errMsg)));
     }
 
-    // 使用 NONObjectInfo 的 object_id 进行创建新 Order 对象的事务操作
+    // Use the object_id of NONObjectInfo for the transaction operation of creating a new Order object
     const objectId = nonObj.object_id;
     const rp = await pathOpEnv.insert_with_path(path, objectId);
     if (rp.err) {
@@ -98,7 +98,7 @@ export async function createOrderReqRouter(
         return Promise.resolve(cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.Failed, errMsg)));
     }
 
-    // 事务提交
+    // transaction commit
     const ret = await pathOpEnv.commit();
     if (ret.err) {
         const errMsg = `commit failed, ${ret}.`;
@@ -106,10 +106,10 @@ export async function createOrderReqRouter(
         return Promise.resolve(cyfs.Err(new cyfs.BuckyError(cyfs.BuckyErrorCode.Failed, errMsg)));
     }
 
-    // 事务操作成功
+    // Transaction operation succeeded
     console.log('create new order success.');
 
-    // 创建 ResponseObject 对象作为响应参数并将结果响应回去
+    // Create a ResponseObject object as a response parameter and respond back with the result
     const respObj: CreateOrderReqResponseParam = ResponseObject.create({
         err: 0,
         msg: 'ok',

@@ -9,7 +9,7 @@ import { OrderDecoder } from '../../common/objs/order';
 export async function deleteOrderRouter(
     req: cyfs.RouterHandlerPostObjectRequest
 ): Promise<cyfs.BuckyResult<cyfs.RouterHandlerPostObjectResult>> {
-    // 解析出请求对象，判断请求对象是否是 Order 对象
+    // Parse out the request object and determine whether the request object is an Order object
     const { object, object_raw } = req.request.object;
     if (!object || object.obj_type() !== AppObjectType.ORDER) {
         const msg = `obj_type err.`;
@@ -17,7 +17,7 @@ export async function deleteOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.InvalidParam, msg));
     }
 
-    // 使用 OrderDecoder 解码出 Order 对象
+    // Use OrderDecoder to decode the Order object
     const decoder = new OrderDecoder();
     const r = decoder.from_raw(object_raw);
     if (r.err) {
@@ -27,7 +27,7 @@ export async function deleteOrderRouter(
     }
     const orderObj = r.unwrap();
 
-    // 创建pathOpEnv,用来对RootState上的对象进行事务操作
+    // Create pathOpEnv to perform transaction operations on objects on RootState
     let pathOpEnv: cyfs.PathOpEnvStub;
     const stack = checkStack().check();
     let createRet = await stack.root_state_stub().create_path_op_env();
@@ -38,7 +38,7 @@ export async function deleteOrderRouter(
     }
     pathOpEnv = createRet.unwrap();
 
-    // 确定将要删除的 Order 对象的存储路径并对该路径上锁
+    // Determine the storage path of the Order object to be deleted and lock the path
     const queryOrderPath = `/orders/${orderObj.key}`;
     const paths = [queryOrderPath];
     console.log(`will lock paths ${JSON.stringify(paths)}`);
@@ -50,10 +50,10 @@ export async function deleteOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 上锁成功
+    // Locked successfully
     console.log(`lock ${JSON.stringify(paths)} success.`);
 
-    // 使用 pathOpEnv 的 get_by_path 方法从 Order 对象的存储路径中获取 Order 对象的 object_id
+    // Use the get_by_path method of pathOpEnv to get the object_id of the Order object from the storage path of the Order object
     const idR = await pathOpEnv.get_by_path(queryOrderPath);
     if (idR.err) {
         const errMsg = `get_by_path (${queryOrderPath}) failed, ${idR}`;
@@ -67,7 +67,7 @@ export async function deleteOrderRouter(
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
 
-    // 使用pathOpEnv 的 remove_with_path 方法，传入将要删除的 Order 对象的 object_id 进行删除 Order 对象的事务操作
+    // Use the remove_with_path method of pathOpEnv to pass in the object_id of the Order object to be deleted for the transaction operation of deleting the Order object
     const rm = await pathOpEnv.remove_with_path(queryOrderPath, objectId);
     console.log(`remove_with_path(${queryOrderPath}, ${objectId.to_base_58()}), ${rm}`);
     if (rm.err) {
@@ -76,16 +76,16 @@ export async function deleteOrderRouter(
         return rm;
     }
 
-    // 事务提交
+    // transaction commit
     const ret = await pathOpEnv.commit();
     if (ret.err) {
         const errMsg = `commit failed, ${ret}`;
         return Promise.resolve(makeBuckyErr(cyfs.BuckyErrorCode.Failed, errMsg));
     }
-    // 事务操作成功
+    // Transaction operation succeeded
     console.log('delete order success.');
 
-    // 创建 ResponseObject 对象作为响应参数并将结果发给前端
+    // Create a ResponseObject object as a response parameter and send the result to the front end
     const respObj: DeleteOrderResponseParam = ResponseObject.create({
         err: 0,
         msg: 'ok',

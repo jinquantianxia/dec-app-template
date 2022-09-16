@@ -2,7 +2,7 @@
 import * as cyfs from 'cyfs-sdk';
 import { AppObjectType } from '../types';
 import * as protos from './obj_proto_pb';
-// type的前16位是系统保留类型，应用的对象type应该大于32767
+// The first 16 bits of type are reserved by the system, and the type of the applied object should be greater than 32767
 export const HELLO_REQUEST_OBJECT_TYPE = AppObjectType.HELLO_REQUEST;
 
 export class HelloRequestObjectDescTypeInfo extends cyfs.DescTypeInfo {
@@ -41,7 +41,6 @@ export class HelloRequestObjectDescContent extends cyfs.ProtobufDescContent {
         return cyfs.Ok(target);
     }
 
-    // 获取名字
     public get name(): string {
         return this.m_name;
     }
