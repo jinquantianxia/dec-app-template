@@ -192,7 +192,7 @@ export class DownloadFileTask extends EventEmitter implements DownloadFileTaskEv
                 flags: 0,
                 dec_id: this.m_decId
             },
-            task_id: this.m_taskId
+            task_id: this.m_taskId!
         });
 
         if (sr.err) {
@@ -297,7 +297,7 @@ export class DownloadFileTask extends EventEmitter implements DownloadFileTaskEv
             return dr;
         }
         this.m_file = dr.unwrap();
-        this.m_total = cyfs.JSBI.toNumber(this.m_file.desc().content().len);
+        this.m_total = cyfs.JSBI.toNumber(this.m_file!.desc().content().len);
 
         this.emit('total');
         return cyfs.Ok(this.m_file);

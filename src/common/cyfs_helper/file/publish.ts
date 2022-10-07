@@ -29,6 +29,8 @@ export class PublishFileTask extends EventEmitter {
             local_path: this.m_filePath,
             chunk_size: this.m_chunkSize
         });
-        return r.map((v) => cyfs.FileId.try_from_object_id(v.file_id).unwrap());
+        return r.map((v: { file_id: cyfs.ObjectId }) =>
+            cyfs.FileId.try_from_object_id(v.file_id).unwrap()
+        );
     }
 }

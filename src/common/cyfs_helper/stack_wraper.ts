@@ -146,7 +146,7 @@ export class StackWraper {
             return r;
         }
         const resp = r.unwrap();
-        return fromNONObjectInfo(resp.object, decoderGen).map((object) => ({
+        return fromNONObjectInfo(resp.object, decoderGen).map((object: any) => ({
             object,
             updateTime:
                 resp.object_update_time && cyfs.bucky_time_2_js_time(resp.object_update_time),
@@ -260,60 +260,6 @@ export class StackWraper {
         return cyfs.Ok(resp.object);
     }
 
-    public async selectObject(
-        filter: {
-            objType?: number;
-            objTypeCode?: cyfs.ObjectTypeCode;
-            decId?: cyfs.ObjectId;
-            ownerId?: cyfs.ObjectId;
-            authorId?: cyfs.ObjectId;
-            createTime?: cyfs.SelectTimeRange;
-            updateTime?: cyfs.SelectTimeRange;
-            insertTime?: cyfs.SelectTimeRange;
-            flags?: number;
-        },
-        pagination?: {
-            pageSize: number;
-            pageIndex: number;
-        },
-        options?: {
-            reqPath?: string;
-            decId?: cyfs.ObjectId;
-            level?: cyfs.NONAPILevel;
-            flags?: number;
-            target?: cyfs.ObjectId;
-        }
-    ): Promise<cyfs.BuckyResult<cyfs.NONSelectObjectOutputResponse>> {
-        let opt: cyfs.SelectOption | undefined;
-        if (pagination) {
-            opt = {
-                page_index: pagination.pageIndex,
-                page_size: pagination.pageSize
-            };
-        }
-        return await this.m_stack.non_service().select_object({
-            common: {
-                req_path: options?.reqPath,
-                dec_id: options?.decId,
-                level: options?.level || cyfs.NONAPILevel.Router,
-                flags: options?.flags || 0,
-                target: options?.target
-            },
-            filter: {
-                obj_type: filter?.objType,
-                obj_type_code: filter?.objTypeCode,
-                dec_id: filter?.decId,
-                owner_id: filter?.ownerId,
-                author_id: filter?.authorId,
-                create_time: filter?.createTime,
-                update_time: filter?.updateTime,
-                insert_time: filter?.insertTime,
-                flags: filter?.flags
-            },
-            opt
-        });
-    }
-
     public async putObject(
         obj: AsObject,
         options?: {
@@ -372,7 +318,7 @@ export class StackWraper {
             inner_path: options?.innerPath
         });
 
-        return r.map((resp) => resp.object);
+        return r.map((resp: { object: any }) => resp.object);
     }
 
     public async signObject<O extends AsObject>(
@@ -432,7 +378,7 @@ export class StackWraper {
             console.error(`sign object failed when decode, ${dr}`);
             return dr;
         }
-        return dr.map((obj) => ({ object: obj, state: resp.result }));
+        return dr.map((obj: any) => ({ object: obj, state: resp.result }));
     }
 
     public async verifyObject(
@@ -487,7 +433,7 @@ export class StackWraper {
             sign_object: signSource
         });
 
-        return verifyR.map((r) => r.result.valid);
+        return verifyR.map((r: { result: { valid: any } }) => r.result.valid);
     }
 
     public async getDeviceFromCache(
@@ -496,13 +442,13 @@ export class StackWraper {
         const r = await this.getObject(deviceId.object_id, cyfs.DeviceDecoder, {
             level: cyfs.NONAPILevel.NOC
         });
-        return r.map((r) => r.object);
+        return r.map((r: { object: any }) => r.object);
     }
 
     public async isReqestInZone(
         req: cyfs.RouterHandlerPostObjectRequest
     ): Promise<cyfs.BuckyResult<boolean>> {
-        const devR = await this.getDeviceFromCache(req.request.common.source);
+        const devR = await this.getDeviceFromCache(req.request.common.source.zone.device!);
         if (devR.err) {
             const msg = `get source device failed, ${devR}`;
             console.error(msg);
@@ -524,7 +470,7 @@ export class StackWraper {
             object_id: ownerId,
             owner_id: ownerId
         });
-        return rsR.map((resp) => resp.device_list);
+        return rsR.map((resp: { device_list: any }) => resp.device_list);
     }
 
     public async publishFile(
@@ -621,12 +567,12 @@ export class StackWraper {
         // 等待节点上线
         console.info('will wait online.');
         while (true) {
-            const r = await this.m_stack.wait_online(cyfs.Some(cyfs.JSBI.BigInt(1000000)));
+            const r = await this.m_stack.wait_online(cyfs.JSBI.BigInt(1000000));
             if (r.err) {
                 console.error(`wait online err: ${r.val}`);
             } else {
                 console.info('online success.');
-                console.info(`device: ${this.m_stack.local_device_id}`);
+                console.info(`device: ${this.m_stack.local_device_id()}`);
                 console.info(`owner: ${this.m_stack.local_device().desc().owner()?.unwrap()}`);
                 break;
             }
@@ -691,7 +637,7 @@ export async function waitStackOOD(decId?: cyfs.ObjectId): Promise<cyfs.BuckyRes
     if (!g_stack) {
         g_stack = new StackInitializerOOD(decId);
     }
-    return (await g_stack.waitOnline()).map((_) => g_stack!);
+    return (await g_stack.waitOnline()).map((_: any) => g_stack!);
 }
 
 export async function waitStackRuntime(
@@ -700,7 +646,7 @@ export async function waitStackRuntime(
     if (!g_stack) {
         g_stack = new StackInitializerRuntime(decId);
     }
-    return (await g_stack.waitOnline()).map((_) => g_stack!);
+    return (await g_stack.waitOnline()).map((_: any) => g_stack!);
 }
 
 export async function initWithNativeStack(

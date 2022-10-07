@@ -28,14 +28,36 @@ class PostRouterReqPathRouterHandler implements cyfs.RouterHandlerPostObjectRout
 
 async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Promise<void> {
     for (const routerObj of routers) {
+        const access = new cyfs.AccessString(0);
+        access.set_group_permissions(
+            cyfs.AccessGroup.CurrentZone,
+            cyfs.AccessPermissions.WirteAndCall
+        );
+        access.set_group_permissions(
+            cyfs.AccessGroup.CurrentDevice,
+            cyfs.AccessPermissions.WirteAndCall
+        );
+        access.set_group_permissions(
+            cyfs.AccessGroup.OwnerDec,
+            cyfs.AccessPermissions.WirteAndCall
+        );
+        const ra = await stack
+            .root_state_meta_stub()
+            .add_access(cyfs.GlobalStatePathAccessItem.new(routerObj.reqPath, access));
+        if (ra.err) {
+            console.error(`path (${routerObj.reqPath}) add access error: ${ra}`);
+            continue;
+        }
+        console.log('add access successed: ', ra.unwrap());
         const handleId = `post-${routerObj.reqPath}`;
         const r = await stack.router_handlers().add_post_object_handler(
             cyfs.RouterHandlerChain.Handler,
             handleId,
             1,
-            `dec_id==${stack.dec_id!}`, // filter config,Only allow requests from the current App to pass through
+            undefined, // filter config,Only allow requests from the current App to pass through
+            routerObj.reqPath,
             cyfs.RouterHandlerAction.Pass,
-            cyfs.Some(new PostRouterReqPathRouterHandler(routerObj))
+            new PostRouterReqPathRouterHandler(routerObj)
         );
 
         if (r.err) {
@@ -44,7 +66,6 @@ async function addRouters(stack: cyfs.SharedCyfsStack, routers: RouterArray): Pr
             console.info(`add post handler (${handleId}) success.`);
         }
     }
-    console.log(`added ${Object.entries(routers).length} routers success.`);
 }
 
 async function main() {
@@ -61,7 +82,9 @@ async function main() {
     }
     // register route
     const stack = checkStack().check();
-    addRouters(stack, routers);
+    stack.local_cache_meta_stub(DEC_ID);
+    await addRouters(stack, routers);
+
     console.log('service is ready.');
 }
 
