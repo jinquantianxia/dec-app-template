@@ -4,17 +4,17 @@ A set of standardized dec-app project templates.
 
 ## CYFS project basic compilation command
 
--   Execute yarn install dependencies
--   Execute yarn proto-mac to compile proto files into js files, you need to execute yarn proto-mac-pre (mac) first
--   Execute yarn proto-windows to compile proto files into js files (windows)
--   Execute yarn dev to start the local front-end service, and you can view the modification effect in real time from the `cyfs browser`
+-   Execute npm run install dependencies
+-   Execute npm run proto-mac to compile proto files into js files, you need to execute npm run proto-mac-pre (mac) first
+-   Execute npm run proto-windows to compile proto files into js files (windows)
+-   Execute npm run dev to start the local front-end service, and you can view the modification effect in real time from the `cyfs browser`
 -   Run tools/zone-simulator.exe to open the simulator. Note: If you only test the same zone interface, use sim1, if you need to test the cross-zone interface, you need to open sim2 again
--   execute yarn sim1 to start `sim1` running on the local emulator,
--   Execute yarn sim2 to start `sim2` running on the local emulator
--   execute yarn build to execute the build task
--   Execute yarn deploy to deploy `DEC App` to `OOD`, the user can install it, the mac system needs to execute yarn mac-deploy-pre first
--   execute yarn lint to execute eslint checks
--   execute yarn lint_fix to execute eslint autofix
+-   execute npm run sim1 to start `sim1` running on the local emulator,
+-   Execute npm run sim2 to start `sim2` running on the local emulator
+-   execute npm run build to execute the build task
+-   Execute npm run deploy to deploy `DEC App` to `OOD`, the user can install it, the mac system needs to execute npm run mac-deploy-pre first
+-   execute npm run lint to execute eslint checks
+-   execute npm run lint_fix to execute eslint autofix
 
 ## CYFS project directory structure description
 
@@ -32,8 +32,8 @@ A set of standardized dec-app project templates.
 In the project root directory, execute the command as follows:
 
 ```shell
-yarn proto-mac-pre
-yarn proto-mac
+npm run proto-mac-pre
+npm run proto-mac
 ```
 
 **Note** Since the protoc executable program is directly executed, a pop-up window may prompt _cannot open "protoc" because the developer cannot be verified_, and the developer needs to set it according to the following path:
