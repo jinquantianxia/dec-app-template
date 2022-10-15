@@ -1,1 +1,1 @@
-# 公共组件
+# public component

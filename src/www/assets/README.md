@@ -1,1 +1,1 @@
-# 资源文件夹，存放静态资源文件，图片等
+# Resource folder, which stores static resource files, pictures, etc.

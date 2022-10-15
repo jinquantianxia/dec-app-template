@@ -1,1 +1,1 @@
-# 常量文件夹，存放项目中用到的常量
+# Constants folder, which stores constants used in the project
