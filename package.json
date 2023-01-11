@@ -12,6 +12,7 @@
         "sim2": "npx tsc && node deploy/src/service/entry/app_startup.js --start --simulator 2",
         "proto-mac-pre": "npm i -g ts-protoc-gen && cd tools && chmod 775 protoc",
         "proto-mac": "cd tools && ./protoc --proto_path=../src/common/objs --js_out=import_style=commonjs,binary:../src/common/objs --ts_out=../src/common/objs/ ../src/common/objs/obj_proto.proto",
+        "proto-windows-pre": "npm i -g ts-protoc-gen",
         "proto-windows": "cd tools && protoc.exe --proto_path=../src/common/objs --js_out=import_style=commonjs,binary:../src/common/objs --ts_out=../src/common/objs/ ../src/common/objs/obj_proto.proto",
         "lint": "eslint \"**/*.{ts,tsx}\"",
         "lint-fix": "eslint \"**/*.{ts,tsx}\" --fix"
@@ -62,7 +63,7 @@
     },
     "dependencies": {
         "antd": "^4.18.3",
-        "cyfs-sdk": "^0.5.3",
+        "cyfs-sdk": "^0.5.15",
         "google-protobuf": "^3.20.1",
         "path": "^0.12.7",
         "react": "^17.0.2",
